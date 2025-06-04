@@ -9,15 +9,14 @@ import Foundation
 
 // MARK: - AllCharactersModel
 struct AllCharactersModel: Codable {
-    let info: Info?
+    var info: Info?
     let results: [AllCharactersResult]?
 }
 
 // MARK: - Info
 struct Info: Codable {
     let count, pages: Int?
-    let next: String?
-    let prev: String?
+    let next, prev: String?
 }
 
 // MARK: - Result
@@ -25,7 +24,7 @@ struct AllCharactersResult: Codable {
     let id: Int?
     let name: String?
     let status: Status?
-    let species: Species?
+    let species: String?
     let type: String?
     let gender: Gender?
     let origin, location: Location?
@@ -50,10 +49,30 @@ struct Location: Codable {
 enum Species: String, Codable {
     case alien = "Alien"
     case human = "Human"
+    
+    var description: String {
+        switch self {
+        case .alien:
+            return "Alien"
+        case .human:
+            return "Human"
+        }
+    }
 }
 
 enum Status: String, Codable {
     case alive = "Alive"
     case dead = "Dead"
     case unknown = "unknown"
+    
+    var description: String {
+        switch self {
+        case .alive:
+            return "Alive"
+        case .dead:
+            return "Dead"
+        case .unknown:
+            return "Unknown"
+        }
+    }
 }

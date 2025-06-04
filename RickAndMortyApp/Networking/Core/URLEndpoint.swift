@@ -7,7 +7,7 @@
 
 import Foundation
 
-@frozen public enum URLEndpoint: String {
+enum URLEndpoint: String {
     case character = "/character"
     case location = "/location"
     case episode = "/episode"

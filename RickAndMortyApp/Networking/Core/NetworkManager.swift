@@ -14,6 +14,7 @@ final class NetworkManager {
     func sendRequest<T: Codable>(url: String,
                                  model: T.Type,
                                  method: String = "GET") async throws -> T {
+        
         guard let url = URL(string: url) else { throw NetworkError.invalidURL }
         var request = URLRequest(url: url)
         request.httpMethod = method

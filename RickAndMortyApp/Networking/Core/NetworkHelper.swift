@@ -8,12 +8,13 @@
 import Foundation
 
 final class NetworkHelper {
-    let baseUrl = "https://rickandmortyapi.com/api"
+    private let baseUrl = "https://rickandmortyapi.com/api"
+    private let endpoint: URLEndpoint
+    private let next: String
     
-    let endpoint: URLEndpoint
-    
-    init(endpoint: URLEndpoint) {
+    init(endpoint: URLEndpoint, next: String = "") {
         self.endpoint = endpoint
+        self.next = next
     }
 }
 
