@@ -11,7 +11,7 @@ final class CharactersViewModel {
     private let manager = CharactersManager()
     private(set) var characterModel = [AllCharactersResult]()
     private var allCharacters: AllCharactersModel?
-    private var nextURL: String?
+    private var nextURL: String = NetworkHelper(endpoint: .character).requestURL + "?page=2"
     var sendState: ((ViewState) -> Void)?
     
     private var state: ViewState = .idle {
@@ -34,17 +34,28 @@ final class CharactersViewModel {
         }
     }
     
-    func paginate() {
+    func paginate(index: Int) {
         Task {
             do {
-                allCharacters = try await manager.getAllCharacters()
-                let data = try await manager.getCharactersWithPagination(nextURL: allCharacters?.info?.next ?? "NO URL").results ?? []
-                nextURL = allCharacters?.info?.next
-                characterModel.append(contentsOf: data)
-                state = .success
+                if index == characterModel.count - 2 {
+                    let data = try await manager.getCharactersWithPagination(nextURL: nextURL).results ?? []
+                    print(nextURL)
+                    allCharacters = try await manager.getCharactersWithPagination(nextURL: nextURL)
+                    nextURL = allCharacters?.info?.next ?? "NO URL"
+                    characterModel.append(contentsOf: data)
+                    state = .success
+                }
             } catch {
                 state = .error(error.localizedDescription)
             }
         }
+    }
+    
+    func refresh() {
+        characterModel.removeAll()
+        allCharacters = nil
+        getCharacters()
+        nextURL = NetworkHelper(endpoint: .character).requestURL + "?page=2"
+        state = .success
     }
 }

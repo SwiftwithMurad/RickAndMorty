@@ -16,11 +16,11 @@ struct AllCharactersModel: Codable {
 // MARK: - Info
 struct Info: Codable {
     let count, pages: Int?
-    let next, prev: String?
+    var next, prev: String?
 }
 
 // MARK: - Result
-struct AllCharactersResult: Codable {
+struct AllCharactersResult: Codable, CharacterResult {
     let id: Int?
     let name: String?
     let status: Status?
@@ -32,10 +32,51 @@ struct AllCharactersResult: Codable {
     let episode: [String]?
     let url: String?
     let created: String?
+    
+    var imageData: String {
+        image ?? "NO IMAGE"
+    }
+    
+    var nameData: String {
+        name ?? "NO NAME"
+    }
+    
+    var statusData: String {
+        status?.rawValue ?? "NO STATUS" 
+    }
+    
+    var genderData: String {
+        gender?.rawValue ?? "NO GENDER"
+    }
+    
+    var typeData: String {
+        type ?? "NO TYPE"
+    }
+    
+    var speciesData: String {
+        species ?? "NO SPECIES"
+    }
+    
+    var originData: String {
+        origin?.name ?? "NO ORIGIN"
+    }
+    
+    var locationData: String {
+        location?.name ?? "NO LOCATION"
+    }
+    
+    var createdData: String {
+        created ?? "NO DATA"
+    }
+    
+    var episodeCountData: Int {
+        episode?.count ?? 0
+    }
 }
 
 enum Gender: String, Codable {
     case female = "Female"
+    case genderless = "Genderless"
     case male = "Male"
     case unknown = "unknown"
 }

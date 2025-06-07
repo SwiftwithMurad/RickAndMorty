@@ -8,6 +8,12 @@
 import UIKit
 
 final class CharactersController: BaseController {
+    private lazy var refreshControl: UIRefreshControl = {
+        let refresh = UIRefreshControl()
+        refresh.addTarget(self, action: #selector(refreshStarted), for: .valueChanged)
+        return refresh
+    }()
+    
     private lazy var spinner: UIActivityIndicatorView = {
         let spinner = UIActivityIndicatorView(style: .medium)
         spinner.translatesAutoresizingMaskIntoConstraints = false
@@ -28,6 +34,11 @@ final class CharactersController: BaseController {
     
     private let viewModel = CharactersViewModel()
     
+    @objc private func refreshStarted() {
+        viewModel.refresh()
+        refreshControl.endRefreshing()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()       
     }
@@ -36,6 +47,8 @@ final class CharactersController: BaseController {
         handleTitle(with: "Characters")
         view.backgroundColor = .systemBackground
         view.addSubViews(spinner, collection)
+        collection.refreshControl = refreshControl
+        showSearchButton()
         spinner.startAnimating()
     }
     
@@ -85,13 +98,20 @@ extension CharactersController: UICollectionViewDelegate, UICollectionViewDataSo
         return cell
     }
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let characterData = viewModel.characterModel[indexPath.row]
+        let coordinator = CharacterDetailCoordinator(navigationController: navigationController ?? UINavigationController(),
+                                                     title: characterData.name ?? "No Name",
+                                                     url: characterData.url ?? "NO URL",
+                                                     characterResult: characterData)
+        coordinator.start()
+    }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: collectionView.frame.width / 2 - 32, height: collectionView.frame.height / 2 - 32)
+        return .init(width: collectionView.frame.width / 2 - 22, height: collectionView.frame.height / 2 - 32)
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        if indexPath.row == viewModel.characterModel.count - 2 {
-            viewModel.paginate()
-        }
+        viewModel.paginate(index: indexPath.row)
     }
 }

@@ -15,6 +15,7 @@ final class LocationsController: BaseController {
     
     override func configureUI() {
         handleTitle(with: "Locations")
+        showSearchButton()
         view.backgroundColor = .systemBackground
     }
 }

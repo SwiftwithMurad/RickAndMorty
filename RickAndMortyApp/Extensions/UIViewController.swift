@@ -19,4 +19,17 @@ extension UIViewController {
         alertController.addAction(action)
         present(alertController, animated: true)
     }
+    
+    func showSearchButton(){
+        self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search,
+                                                                 target: self,
+                                                                 action: #selector(searchButtonTapped))
+    }
+    
+    @objc private func searchButtonTapped() {
+        guard let title else { return }
+        let coordinator = SearchCoordinator(navigationController: navigationController ?? UINavigationController(),
+                                            title: title.lowercased())
+        coordinator.start()
+    }
 }

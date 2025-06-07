@@ -64,22 +64,9 @@ class CharactersCell: UICollectionViewCell {
         ])
     }
     
-    func configureCell(with model: AllCharactersResult) {
-        characterImage.setImage(with: model.image)
-        characterName.text = model.name
-        characterStatus.text = "Status: \(model.status?.description ?? "No status")"
+    func configureCell(with model: CharacterResult) {
+        characterImage.setImage(with: model.imageData)
+        characterName.text = model.nameData
+        characterStatus.text = "Status: \(model.statusData.description)"
     }
-}
-
-protocol CharacterDetail {
-    var image: String { get }
-    var name: String { get }
-    var status: String { get }
-    var species: String { get }
-}
-
-protocol CharacterResult: CharacterDetail {
-    var image: String { get }
-    var name: String { get }
-    var status: String { get }
 }

@@ -16,5 +16,6 @@ final class EpisodesController: BaseController {
     override func configureUI() {
         handleTitle(with: "Episodes")
         view.backgroundColor = .systemBackground
+        showSearchButton()
     }
 }
