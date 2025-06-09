@@ -35,6 +35,7 @@ final class CharactersViewModel {
     }
     
     func paginate(index: Int) {
+        state = .loading
         Task {
             do {
                 if index == characterModel.count - 2 {
@@ -44,9 +45,11 @@ final class CharactersViewModel {
                     nextURL = allCharacters?.info?.next ?? "NO URL"
                     characterModel.append(contentsOf: data)
                     state = .success
+                    state = .loaded
                 }
             } catch {
                 state = .error(error.localizedDescription)
+                state = .loaded
             }
         }
     }

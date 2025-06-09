@@ -9,11 +9,44 @@ import Foundation
 
 final class CharacterDetailViewModel {
     private var characterURL: String
-    private(set) var characterResult: AllCharactersResult
+    private let manager: CharacterDetailManagerUseCase
+    private(set) var singleCharacter: SingleCharacterModel?
+    private(set) var characterCellData = [CharacterDetailModel]()
+    var sendState: ((ViewState) -> Void)?
     
-    init(characterURL: String, characterResult: AllCharactersResult) {
+    private var state: ViewState = .idle {
+        didSet {
+            sendState?(state)
+        }
+    }
+    
+    init(characterURL: String, manager: CharacterDetailManagerUseCase) {
         self.characterURL = characterURL
-        self.characterResult = characterResult
+        self.manager = manager
+    }
+    
+    func fetchSingleCharacter() {
+        state = .loading
+        Task {
+            do {
+                singleCharacter = try await manager.getSingleCharacter(with: getURL().absoluteString)
+                characterCellData = [
+                    .init(cellTitle: "STATUS", name: singleCharacter?.statusData ?? "NO STATUS"),
+                    .init(cellTitle: "GENDER", name: singleCharacter?.genderData ?? "NO GENDER"),
+                    .init(cellTitle: "TYPE", name: singleCharacter?.typeData ?? "NO TYPE"),
+                    .init(cellTitle: "SPECIES", name: singleCharacter?.speciesData ?? "NO SPECIES"),
+                    .init(cellTitle: "ORIGIN", name: singleCharacter?.originData ?? "NO ORIGIN"),
+                    .init(cellTitle: "LOCATION", name: singleCharacter?.locationData ?? "NO LOCATION"),
+                    .init(cellTitle: "CREATED", name: singleCharacter?.createdData ?? "NO CREATED"),
+                    .init(cellTitle: "EPISODECOUNT", name: "\(singleCharacter?.episodeCountData ?? 0)")
+                ]
+                state = .success
+                state = .loaded
+            } catch {
+                state = .error(error.localizedDescription)
+                state = .loaded
+            }
+        }
     }
     
     func getURL() -> URL {

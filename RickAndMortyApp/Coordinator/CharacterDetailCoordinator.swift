@@ -11,18 +11,16 @@ final class CharacterDetailCoordinator: Coordinator {
     var navigationController: UINavigationController
     private let title: String
     private let url: String
-    private let characterResult: AllCharactersResult
     
-    init(navigationController: UINavigationController, title: String, url: String, characterResult: AllCharactersResult) {
+    init(navigationController: UINavigationController, title: String, url: String) {
         self.navigationController = navigationController
         self.title = title
         self.url = url
-        self.characterResult = characterResult
     }
     
     func start() {
         let controller = CharacterDetailController(viewModel: .init(characterURL: url,
-                                                                    characterResult: characterResult))
+                                                                    manager: CharacterDetailManager()))
         controller.title = title
         controller.hidesBottomBarWhenPushed = true
         controller.navigationItem.largeTitleDisplayMode = .never

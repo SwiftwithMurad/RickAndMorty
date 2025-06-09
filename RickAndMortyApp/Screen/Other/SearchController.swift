@@ -32,10 +32,20 @@ class SearchController: BaseController {
         super.viewDidLoad()
     }
     
+    @objc func searchTapped() {
+        
+    }
+    
     override func configureUI() {
         view.addSubViews(collection)
         navigationItem.searchController = searchController
         view.backgroundColor = .systemBackground
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Search",
+                                                            style: .plain,
+                                                            target: self,
+                                                            action: #selector(searchTapped))
+        navigationItem.rightBarButtonItem?.setTitleTextAttributes([NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: .bold)],
+                                                                  for: .normal)
     }
     
     override func configureConstraints() {

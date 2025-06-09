@@ -27,6 +27,7 @@ class CharacterDetailFooterView: UICollectionReusableView {
     }
     
     private func configureUI() {
+        backgroundColor = .blue
         addSubViews(collection)
         NSLayoutConstraint.activate([
             

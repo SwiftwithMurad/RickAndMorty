@@ -13,15 +13,24 @@ class CharacterDetailController: BaseController {
         return share
     }()
     
+    private lazy var spinner: UIActivityIndicatorView = {
+        let spinner = UIActivityIndicatorView(style: .medium)
+        spinner.translatesAutoresizingMaskIntoConstraints = false
+        return spinner
+    }()
+    
     private lazy var collection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
+        layout.sectionInset = .init(top: 16, left: 16, bottom: 16, right: 16)
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.dataSource = self
         collection.delegate = self
         collection.register(CharacterDetailHeaderView.self,
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader,
                             withReuseIdentifier: "\(CharacterDetailHeaderView.self)")
+        collection.register(CharacterDetailCell.self,
+                            forCellWithReuseIdentifier: "\(CharacterDetailCell.self)")
         collection.register(CharacterDetailFooterView.self,
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                             withReuseIdentifier: "\(CharacterDetailFooterView.self)")
@@ -58,23 +67,52 @@ class CharacterDetailController: BaseController {
     }
     
     override func configureConstraints() {
-        view.addSubViews(collection)
+        view.addSubViews(collection, spinner)
         NSLayoutConstraint.activate([
             collection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             collection.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
             collection.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            
+            spinner.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            spinner.centerYAnchor.constraint(equalTo: view.centerYAnchor),
         ])
+    }
+    
+    override func configureViewModel() {
+        viewModel.sendState = { [weak self] state in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                switch state {
+                case .loading:
+                    self.spinner.startAnimating()
+                case .loaded:
+                    self.spinner.stopAnimating()
+                case .success:
+                    self.collection.reloadData()
+                case .error(let error):
+                    self.showAlert(and: error)
+                case .idle:
+                    break
+                }
+            }
+        }
+        viewModel.fetchSingleCharacter()
+//        viewModel.getCellData()
     }
 }
 
 extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        1
+        viewModel.characterCellData.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(UICollectionViewCell.self)", for: indexPath)
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "\(CharacterDetailCell.self)",
+                                                            for: indexPath) as? CharacterDetailCell else {
+            return UICollectionViewCell()
+        }
+        cell.configureCell(with: viewModel.characterCellData[indexPath.row])
         return cell
     }
     
@@ -87,7 +125,7 @@ extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewD
                 return UICollectionReusableView()
             }
             
-            header.configureHeader(with: viewModel.characterResult.image ?? "")
+            header.configureHeader(with: viewModel.singleCharacter?.image ?? "NO IMAGE")
             
             return header
         case UICollectionView.elementKindSectionFooter:
@@ -104,10 +142,14 @@ extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        .init(width: collectionView.frame.width, height: collectionView.frame.height / 2 - 60)
+        .init(width: collectionView.frame.width, height: collectionView.frame.height / 2 - 100)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        .init(width: collectionView.frame.width, height: 50)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .init(width: 10, height: 10)
+        .init(width: collectionView.frame.width / 2 - 24, height: 150)
     }
 }

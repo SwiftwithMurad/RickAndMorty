@@ -49,7 +49,6 @@ final class CharactersController: BaseController {
         view.addSubViews(spinner, collection)
         collection.refreshControl = refreshControl
         showSearchButton()
-        spinner.startAnimating()
     }
     
     override func configureConstraints() {
@@ -102,8 +101,7 @@ extension CharactersController: UICollectionViewDelegate, UICollectionViewDataSo
         let characterData = viewModel.characterModel[indexPath.row]
         let coordinator = CharacterDetailCoordinator(navigationController: navigationController ?? UINavigationController(),
                                                      title: characterData.name ?? "No Name",
-                                                     url: characterData.url ?? "NO URL",
-                                                     characterResult: characterData)
+                                                     url: characterData.url ?? "NO URL")
         coordinator.start()
     }
     

@@ -45,6 +45,10 @@ class CharactersCell: UICollectionViewCell {
     private func configureUI() {
         contentView.backgroundColor = .secondarySystemBackground
         contentView.layer.cornerRadius = 8
+        contentView.layer.shadowColor = UIColor.label.cgColor
+        contentView.layer.cornerRadius = 4
+        contentView.layer.shadowOffset = .init(width: -4, height: 4)
+        contentView.layer.shadowOpacity = 0.3
         contentView.addSubViews(characterImage, characterName, characterStatus)
     }
     
