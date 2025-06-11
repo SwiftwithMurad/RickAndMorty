@@ -22,7 +22,6 @@ final class CharacterDetailCoordinator: Coordinator {
         let controller = CharacterDetailController(viewModel: .init(characterURL: url,
                                                                     manager: CharacterDetailManager()))
         controller.title = title
-        controller.hidesBottomBarWhenPushed = true
         controller.navigationItem.largeTitleDisplayMode = .never
         navigationController.show(controller, sender: nil)
     }

@@ -22,8 +22,9 @@ class CharacterDetailController: BaseController {
     private lazy var collection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .vertical
-        layout.sectionInset = .init(top: 16, left: 16, bottom: 16, right: 16)
+        layout.sectionInset = .init(top: 16, left: 16, bottom: 0, right: 16)
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.showsVerticalScrollIndicator = false
         collection.dataSource = self
         collection.delegate = self
         collection.register(CharacterDetailHeaderView.self,
@@ -34,7 +35,6 @@ class CharacterDetailController: BaseController {
         collection.register(CharacterDetailFooterView.self,
                             forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter,
                             withReuseIdentifier: "\(CharacterDetailFooterView.self)")
-        collection.register(UICollectionViewCell.self, forCellWithReuseIdentifier: "\(UICollectionViewCell.self)")
         collection.translatesAutoresizingMaskIntoConstraints = false
         return collection
     }()
@@ -54,6 +54,10 @@ class CharacterDetailController: BaseController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc private func shareButtonTapped() {
+        present(shareSheet, animated: true)
+    }
+    
     override func configureUI() {
         view.backgroundColor = .systemBackground
         navigationItem.rightBarButtonItem = UIBarButtonItem(image: UIImage(systemName: "square.and.arrow.up"),
@@ -62,10 +66,6 @@ class CharacterDetailController: BaseController {
                                                             action: #selector(shareButtonTapped))
     }
         
-    @objc private func shareButtonTapped() {
-        present(shareSheet, animated: true)
-    }
-    
     override func configureConstraints() {
         view.addSubViews(collection, spinner)
         NSLayoutConstraint.activate([
@@ -98,11 +98,10 @@ class CharacterDetailController: BaseController {
             }
         }
         viewModel.fetchSingleCharacter()
-//        viewModel.getCellData()
     }
 }
 
-extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
+extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, CharacterDetailFooterDelegate {    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.characterCellData.count
     }
@@ -134,11 +133,17 @@ extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewD
                                                                                for: indexPath) as? CharacterDetailFooterView else {
                 return UICollectionReusableView()
             }
-            
+            footer.delegate = self
+            footer.addEpisodes(viewModel.singleCharacter?.episode ?? [])
             return footer
         default:
             assert(false, "Unexpected element kind.")
         }
+    }
+    
+    func didSelectEpisode(at index: Int) {
+        let coordinator = EpisodeDetailCoordinator(navigationController: navigationController ?? UINavigationController())
+        coordinator.start()
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
@@ -146,7 +151,7 @@ extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-        .init(width: collectionView.frame.width, height: 50)
+        .init(width: collectionView.frame.width, height: 150)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

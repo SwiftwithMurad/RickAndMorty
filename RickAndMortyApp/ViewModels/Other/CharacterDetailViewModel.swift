@@ -30,16 +30,7 @@ final class CharacterDetailViewModel {
         Task {
             do {
                 singleCharacter = try await manager.getSingleCharacter(with: getURL().absoluteString)
-                characterCellData = [
-                    .init(cellTitle: "STATUS", name: singleCharacter?.statusData ?? "NO STATUS"),
-                    .init(cellTitle: "GENDER", name: singleCharacter?.genderData ?? "NO GENDER"),
-                    .init(cellTitle: "TYPE", name: singleCharacter?.typeData ?? "NO TYPE"),
-                    .init(cellTitle: "SPECIES", name: singleCharacter?.speciesData ?? "NO SPECIES"),
-                    .init(cellTitle: "ORIGIN", name: singleCharacter?.originData ?? "NO ORIGIN"),
-                    .init(cellTitle: "LOCATION", name: singleCharacter?.locationData ?? "NO LOCATION"),
-                    .init(cellTitle: "CREATED", name: singleCharacter?.createdData ?? "NO CREATED"),
-                    .init(cellTitle: "EPISODECOUNT", name: "\(singleCharacter?.episodeCountData ?? 0)")
-                ]
+                characterCellData = getCharacterCellData(with: &characterCellData)
                 state = .success
                 state = .loaded
             } catch {
@@ -47,6 +38,20 @@ final class CharacterDetailViewModel {
                 state = .loaded
             }
         }
+    }
+    
+    private func getCharacterCellData(with data: inout [CharacterDetailModel]) -> [CharacterDetailModel] {
+        data = [
+            .init(cellTitle: "STATUS", name: singleCharacter?.statusData ?? "NO STATUS"),
+            .init(cellTitle: "GENDER", name: singleCharacter?.genderData ?? "NO GENDER"),
+            .init(cellTitle: "TYPE", name: singleCharacter?.typeData ?? "NO TYPE"),
+            .init(cellTitle: "SPECIES", name: singleCharacter?.speciesData ?? "NO SPECIES"),
+            .init(cellTitle: "ORIGIN", name: singleCharacter?.originData ?? "NO ORIGIN"),
+            .init(cellTitle: "LOCATION", name: singleCharacter?.locationData ?? "NO LOCATION"),
+            .init(cellTitle: "CREATED", name: singleCharacter?.createdData ?? "NO CREATED"),
+            .init(cellTitle: "EPISODECOUNT", name: "\(singleCharacter?.episodeCountData ?? 0)")
+        ]
+        return data
     }
     
     func getURL() -> URL {

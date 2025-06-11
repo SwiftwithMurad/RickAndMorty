@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CharacterDetailHeaderView: UICollectionReusableView {
+final class CharacterDetailHeaderView: UICollectionReusableView {
     private lazy var characterImage: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFill

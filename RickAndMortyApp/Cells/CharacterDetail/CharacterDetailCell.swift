@@ -7,12 +7,7 @@
 
 import UIKit
 
-struct CharacterDetailModel {
-    let cellTitle: String
-    let name: String
-}
-
-class CharacterDetailCell: UICollectionViewCell {
+final class CharacterDetailCell: UICollectionViewCell {
     private lazy var bellImage: UIImageView = {
         let image = UIImageView()
         image.image = UIImage(systemName: "bell")

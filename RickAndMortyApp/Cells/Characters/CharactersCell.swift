@@ -7,7 +7,7 @@
 
 import UIKit
 
-class CharactersCell: UICollectionViewCell {
+final class CharactersCell: UICollectionViewCell {
     private lazy var characterImage: UIImageView = {
         let image = UIImageView()
         image.clipsToBounds = true
