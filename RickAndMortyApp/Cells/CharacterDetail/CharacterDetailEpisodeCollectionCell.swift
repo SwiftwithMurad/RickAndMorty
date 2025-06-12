@@ -76,8 +76,8 @@ final class CharacterDetailEpisodeCollectionCell: UICollectionViewCell {
     
     func configureCell() {
         guard let singleEpisode else { return }
-        seasonEpisode.text = "Season \(singleEpisode.episodeData)"
-        episodeName.text = singleEpisode.episodeData
-        episodePublishDate.text = singleEpisode.publishedDate
+        seasonEpisode.text = "Episode \(singleEpisode.episodeData)"
+        episodeName.text = singleEpisode.episodeName
+        episodePublishDate.text = "Aired on \(singleEpisode.publishedDate)"
     }
 }

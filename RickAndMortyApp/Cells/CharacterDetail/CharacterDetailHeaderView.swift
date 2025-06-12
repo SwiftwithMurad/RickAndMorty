@@ -10,10 +10,13 @@ import UIKit
 final class CharacterDetailHeaderView: UICollectionReusableView {
     private lazy var characterImage: UIImageView = {
         let image = UIImageView()
+        image.clipsToBounds = true
         image.contentMode = .scaleAspectFill
         image.translatesAutoresizingMaskIntoConstraints = false
         return image
     }()
+    
+    private var isImageShowed = false
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -36,6 +39,9 @@ final class CharacterDetailHeaderView: UICollectionReusableView {
     }
     
     func configureHeader(with image: String) {
-        characterImage.setImage(with: image)
+        if isImageShowed {
+            characterImage.setImage(with: image)
+        }
+        isImageShowed = true
     }
 }

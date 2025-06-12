@@ -12,6 +12,14 @@ class EpisodeDetailController: BaseController {
         let share = UIActivityViewController(activityItems: [viewModel.getURL()], applicationActivities: nil)
         return share
     }()
+    
+    private lazy var collection: UICollectionView = {
+        let layout = UICollectionViewFlowLayout()
+        layout.scrollDirection = .vertical
+        let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
+        collection.translatesAutoresizingMaskIntoConstraints = false
+        return collection
+    }()
 
     private let viewModel: EpisodeDetailViewModel
     
@@ -39,5 +47,19 @@ class EpisodeDetailController: BaseController {
                                                             style: .done,
                                                             target: self,
                                                             action: #selector(shareButtonTapped))
+    }
+    
+    override func configureConstraints() {
+        view.addSubview(collection)
+        NSLayoutConstraint.activate([
+            collection.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            collection.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            collection.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            collection.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+        ])
+    }
+    
+    override func configureViewModel() {
+        
     }
 }

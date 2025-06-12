@@ -9,7 +9,7 @@ import UIKit
 
 class CharacterDetailController: BaseController {
     private lazy var shareSheet: UIActivityViewController = {
-        let share = UIActivityViewController(activityItems: [viewModel.getURL()], applicationActivities: nil)
+        let share = UIActivityViewController(activityItems: [viewModel.getURL() ?? ""], applicationActivities: nil)
         return share
     }()
     
@@ -101,7 +101,7 @@ class CharacterDetailController: BaseController {
     }
 }
 
-extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout, CharacterDetailFooterDelegate {    
+extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         viewModel.characterCellData.count
     }
@@ -141,13 +141,8 @@ extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewD
         }
     }
     
-    func didSelectEpisode(at index: Int) {
-        let coordinator = EpisodeDetailCoordinator(navigationController: navigationController ?? UINavigationController())
-        coordinator.start()
-    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        .init(width: collectionView.frame.width, height: collectionView.frame.height / 2 - 100)
+        .init(width: collectionView.frame.width, height: 400)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
@@ -155,6 +150,15 @@ extension CharacterDetailController: UICollectionViewDelegate, UICollectionViewD
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        .init(width: collectionView.frame.width / 2 - 24, height: 150)
+        .init(width: collectionView.frame.width / 2.2 - 4, height: 160)
+    }
+}
+
+extension CharacterDetailController: CharacterDetailFooterDelegate {
+    func didSelectEpisode(at index: Int) {
+        guard let episode = viewModel.singleCharacter?.episode?[index] else { return }
+        let coordinator = EpisodeDetailCoordinator(navigationController: navigationController ?? UINavigationController(),
+                                                   url: episode)
+        coordinator.start()
     }
 }

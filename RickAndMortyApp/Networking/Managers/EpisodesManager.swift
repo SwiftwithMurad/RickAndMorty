@@ -10,6 +10,7 @@ import Foundation
 protocol EpisodesManagerUseCase {
     func getAllEpisodes() async throws -> AllEpisodesModel
     func getSingleEpisode(_ url: String) async throws -> SingleEpisodeModel
+    func getEpisodesWithPagination(with nextURL: String) async throws -> AllEpisodesModel
 }
 
 final class EpisodesManager: EpisodesManagerUseCase {
@@ -26,6 +27,15 @@ final class EpisodesManager: EpisodesManagerUseCase {
     func getSingleEpisode(_ url: String) async throws -> SingleEpisodeModel {
         do {
             let data = try await NetworkManager.shared.sendRequest(url: url, model: SingleEpisodeModel.self)
+            return data
+        } catch {
+            throw error
+        }
+    }
+    
+    func getEpisodesWithPagination(with nextURL: String) async throws -> AllEpisodesModel {
+        do {
+            let data = try await NetworkManager.shared.sendRequest(url: nextURL, model: AllEpisodesModel.self)
             return data
         } catch {
             throw error

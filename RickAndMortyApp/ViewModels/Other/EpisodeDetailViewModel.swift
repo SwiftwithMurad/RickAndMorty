@@ -8,7 +8,14 @@
 import Foundation
 
 final class EpisodeDetailViewModel {
-    func getURL() {
-        
+    private let episodeURL: String
+    
+    init(episodeURL: String) {
+        self.episodeURL = episodeURL
+    }
+    
+    func getURL() -> URL? {
+        guard let url = URL(string: episodeURL) else { return nil }
+        return url
     }
 }

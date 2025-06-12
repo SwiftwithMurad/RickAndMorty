@@ -34,22 +34,16 @@ final class CharactersViewModel {
         }
     }
     
-    func paginate(index: Int) {
-        state = .loading
+    func paginateCharacters(index: Int) {
         Task {
             do {
-                if index == characterModel.count - 2 {
-                    let data = try await manager.getCharactersWithPagination(nextURL: nextURL).results ?? []
-                    print(nextURL)
-                    allCharacters = try await manager.getCharactersWithPagination(nextURL: nextURL)
-                    nextURL = allCharacters?.info?.next ?? "NO URL"
-                    characterModel.append(contentsOf: data)
-                    state = .success
-                    state = .loaded
-                }
+                guard index == characterModel.count - 2 else { return }
+                let data = try await manager.getCharactersWithPagination(nextURL: nextURL)
+                nextURL = data.info?.next ?? "NO URL"
+                characterModel.append(contentsOf: data.results ?? [])
+                state = .success
             } catch {
                 state = .error(error.localizedDescription)
-                state = .loaded
             }
         }
     }

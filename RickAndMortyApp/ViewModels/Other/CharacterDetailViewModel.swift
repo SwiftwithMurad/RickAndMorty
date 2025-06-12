@@ -29,7 +29,8 @@ final class CharacterDetailViewModel {
         state = .loading
         Task {
             do {
-                singleCharacter = try await manager.getSingleCharacter(with: getURL().absoluteString)
+                guard let url = getURL() else { return }
+                singleCharacter = try await manager.getSingleCharacter(with: url.absoluteString)
                 characterCellData = getCharacterCellData(with: &characterCellData)
                 state = .success
                 state = .loaded
@@ -54,8 +55,8 @@ final class CharacterDetailViewModel {
         return data
     }
     
-    func getURL() -> URL {
-        guard let url = URL(string: characterURL) else { return URL(fileURLWithPath: "") }
+    func getURL() -> URL? {
+        guard let url = URL(string: characterURL) else { return nil }
         return url
     }
 }

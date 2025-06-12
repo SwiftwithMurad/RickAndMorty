@@ -9,13 +9,16 @@ import UIKit
 
 final class EpisodeDetailCoordinator: Coordinator {
     var navigationController: UINavigationController
+    private let url: String
     
-    init(navigationController: UINavigationController) {
+    init(navigationController: UINavigationController, url: String) {
         self.navigationController = navigationController
+        self.url = url
     }
     
     func start() {
-        let controller = EpisodeDetailController(viewModel: .init())
+        let controller = EpisodeDetailController(viewModel: .init(episodeURL: url))
+        controller.navigationItem.largeTitleDisplayMode = .never
         navigationController.show(controller, sender: nil)
     }
 }

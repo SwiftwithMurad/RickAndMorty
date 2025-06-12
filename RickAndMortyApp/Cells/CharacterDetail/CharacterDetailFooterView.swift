@@ -15,7 +15,7 @@ final class CharacterDetailFooterView: UICollectionReusableView {
     private lazy var collection: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.scrollDirection = .horizontal
-        layout.sectionInset = .init(top: 0, left: 16, bottom: 0, right: -16)
+        layout.sectionInset = .init(top: 0, left: 16, bottom: 0, right: 0)
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.showsHorizontalScrollIndicator = false
         collection.register(CharacterDetailEpisodeCollectionCell.self,
@@ -44,13 +44,14 @@ final class CharacterDetailFooterView: UICollectionReusableView {
         NSLayoutConstraint.activate([
             collection.topAnchor.constraint(equalTo: topAnchor),
             collection.leadingAnchor.constraint(equalTo: leadingAnchor),
-            collection.trailingAnchor.constraint(equalTo: trailingAnchor),
-            collection.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
+            collection.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -16),
+            collection.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16)
         ])
     }
     
     func addEpisodes(_ episodes: [String]) {
         episodesUrl = episodes
+        collection.reloadData()
     }
 }
 
@@ -65,6 +66,7 @@ extension CharacterDetailFooterView: UICollectionViewDelegate, UICollectionViewD
             return UICollectionViewCell()
         }
         cell.getURL(url: episodesUrl[indexPath.row])
+        print(episodesUrl[indexPath.row])
         return cell
     }
     

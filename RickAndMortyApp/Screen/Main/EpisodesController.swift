@@ -42,8 +42,24 @@ final class EpisodesController: BaseController {
     }
     
     override func configureViewModel() {
+        viewModel.sendState = { [weak self] state in
+            guard let self else { return }
+            DispatchQueue.main.async {
+                switch state {
+                case .loading:
+                    break
+                case .loaded:
+                    break
+                case .success:
+                    self.table.reloadData()
+                case .error(let error):
+                    self.showAlert(and: error)
+                case .idle:
+                    break
+                }
+            }
+        }
         viewModel.fetchEpisodes()
-        table.reloadData()
     }
 }
 
@@ -56,10 +72,22 @@ extension EpisodesController: UITableViewDelegate, UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "\(EpisodesCell.self)") as? EpisodesCell else {
             return UITableViewCell()
         }
+        cell.configureCell(with: viewModel.episodes[indexPath.row])
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let coordinator = EpisodeDetailCoordinator(navigationController: navigationController ?? UINavigationController(),
+                                                   url: viewModel.episodes[indexPath.row].url ?? "NO URL")
+        coordinator.start()
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        viewModel.paginateEpisodes(index: indexPath.row)
     }
 }

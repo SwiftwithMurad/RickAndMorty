@@ -62,13 +62,14 @@ final class CharacterDetailCell: UICollectionViewCell {
             bellImage.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 24),
             
             nameLabel.leadingAnchor.constraint(equalTo: bellImage.trailingAnchor, constant: 16),
-            nameLabel.centerYAnchor.constraint(equalTo: bellImage.centerYAnchor),
             nameLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
+            nameLabel.bottomAnchor.constraint(equalTo: cellNameView.topAnchor),
+            nameLabel.centerYAnchor.constraint(equalTo: bellImage.centerYAnchor),
             
             cellNameView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             cellNameView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
             cellNameView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            cellNameView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.33),
+            cellNameView.heightAnchor.constraint(equalTo: contentView.heightAnchor, multiplier: 0.30),
             
             cellName.centerXAnchor.constraint(equalTo: cellNameView.centerXAnchor),
             cellName.centerYAnchor.constraint(equalTo: cellNameView.centerYAnchor),

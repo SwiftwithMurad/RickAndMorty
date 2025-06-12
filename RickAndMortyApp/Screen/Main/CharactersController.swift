@@ -110,6 +110,6 @@ extension CharactersController: UICollectionViewDelegate, UICollectionViewDataSo
     }
     
     func collectionView(_ collectionView: UICollectionView, willDisplay cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
-        viewModel.paginate(index: indexPath.row)
+        viewModel.paginateCharacters(index: indexPath.row)
     }
 }
